@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from 'react';
+import { ReactNode, createContext, useContext, useState } from 'react';
 
 type TProps = {
     children: ReactNode;
@@ -26,22 +26,6 @@ const useSessionContext = () => useContext(ContextSession);
 function SessionContextProvider(props: TProps) {
     const [stateContext, setStateContext] = useState<TState>(initState);
     const values: [TState, typeof setStateContext] = [stateContext, setStateContext];
-
-    useEffect(() => {
-        const user: any = localStorage.getItem('admin');
-        if (user) {
-            const data = JSON.parse(user);
-            if (data) {
-                initState.isAuth = true;
-                initState.admin = {
-                    name: data.name,
-                    email: data.email,
-                    phone: data.phone,
-                    token: data.token,
-                };
-            }
-        }
-    }, []);
 
     return <ContextSession.Provider value={values}>{props.children}</ContextSession.Provider>;
 }

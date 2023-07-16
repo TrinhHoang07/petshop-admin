@@ -10,6 +10,7 @@ type TRoutes = {
     path: string;
     component: Function;
     layout: Function;
+    protect: boolean;
 };
 
 const routes: TRoutes[] = [
@@ -18,18 +19,21 @@ const routes: TRoutes[] = [
         component: Home,
         layout: DefaultLayout,
         path: routesConfig.home,
+        protect: true,
     },
     {
         id: 2,
         component: Login,
         layout: NoLayout,
         path: routesConfig.login,
+        protect: false,
     },
     {
         id: 3,
         component: NotFound,
         layout: NoLayout,
         path: routesConfig.notFound,
+        protect: false,
     },
 ];
 
