@@ -1,6 +1,7 @@
 import { DefaultLayout } from '../components/Layout/DefaultLayout';
 import { NoLayout } from '../components/Layout/NoLayout';
 import routesConfig from '../config/routes';
+import { Chat } from '../pages/Chat';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { NotFound } from '../pages/NotFound';
@@ -19,6 +20,13 @@ const routes: TRoutes[] = [
         component: Home,
         layout: DefaultLayout,
         path: routesConfig.home,
+        protect: true,
+    },
+    {
+        id: 4,
+        component: Chat,
+        layout: DefaultLayout,
+        path: routesConfig.chat,
         protect: true,
     },
     {

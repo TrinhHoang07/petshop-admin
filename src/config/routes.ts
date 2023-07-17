@@ -1,5 +1,6 @@
 const routesConfig = {
     home: '/',
+    chat: '/chat',
     login: '/login',
     notFound: '*',
 };
