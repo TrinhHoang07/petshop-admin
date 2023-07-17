@@ -1,0 +1,15 @@
+.author {
+    height: 48px;
+    background-color: #22222f;
+    text-align: center;
+    line-height: 48px;
+
+    p {
+        color: var(--white-color);
+        font-size: 1.4rem;
+        font-weight: 500;
+        span {
+            color: red;
+        }
+    }
+}
