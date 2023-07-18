@@ -110,15 +110,6 @@ function ChatBox(props: _T_Props) {
 
     return (
         <div className={cx('chat-box')}>
-            <div
-                onClick={() => {
-                    props.setOpen(true);
-                    scrollToBottom();
-                }}
-                className={cx('container')}
-            >
-                <img src={chatbox} alt="chat box" />
-            </div>
             {props.open && (
                 <div className={cx('content')}>
                     <div className={cx('header-chat')}>

@@ -4,6 +4,8 @@ import styles from './Chat.module.scss';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { Socket, io } from 'socket.io-client';
 import { ChatBoxTest } from '../../components/Layout/components/ChatBoxTest';
+import ChatItem from './ChatItem';
+import { AiOutlineSearch } from 'react-icons/ai';
 // import { ChatBoxTest } from '../../components/Layout/components/ChatBoxTest';
 
 const cx = classNames.bind(styles);
@@ -23,7 +25,7 @@ function Chat(): JSX.Element {
     const [idUser, setIdUser] = useState<string>('');
 
     const renderUser = useMemo(() => {
-        return messages.map((item) => item.id).filter((value, index, array) => array.indexOf(value) === index);
+        return messages.filter((v: TMes, i, a: any[]) => a.findLastIndex((v2: TMes) => v2.id === v.id) === i);
     }, [messages]);
 
     useEffect(() => {
@@ -66,19 +68,27 @@ function Chat(): JSX.Element {
 
     return (
         <div className={cx('wrapper')}>
+            <div className={cx('header-chat')}>
+                <h3 className={cx('heading-chat')}>Chats</h3>
+                <div className={cx('searching')}>
+                    <AiOutlineSearch size={'2.2rem'} />
+                    <input type="text" placeholder="Tìm kiếm..." />
+                </div>
+            </div>
             <div>
-                {renderUser.map((item) => (
-                    <div
-                        onClick={() => {
-                            setIdUser(() => item as string);
-                            setOpen(true);
-                        }}
-                        key={item}
-                        style={{ padding: '10px 0' }}
-                    >
-                        <span>{item}</span>
-                    </div>
-                ))}
+                {renderUser.reverse().map((item: any) => {
+                    return (
+                        <div
+                            onClick={() => {
+                                setIdUser(() => item.id as string);
+                                setOpen(true);
+                            }}
+                            key={item.id}
+                        >
+                            <ChatItem item={item} />
+                        </div>
+                    );
+                })}
                 <ChatBoxTest
                     idUser={idUser}
                     setIdUser={setIdUser}
