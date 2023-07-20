@@ -3,8 +3,6 @@ import classNames from 'classnames/bind';
 import { BiMinus, BiHappy } from 'react-icons/bi';
 import { IoSend } from 'react-icons/io5';
 import { BsFillImageFill } from 'react-icons/bs';
-
-import chatbox from '../../../../assets/images/chat-box.png';
 import logo from '../../../../assets/images/logo-petshop.jpg';
 import cat from '../../../../assets/images/meoww.jpg';
 import { useEffect, useRef, useState, SetStateAction, Dispatch, useMemo } from 'react';

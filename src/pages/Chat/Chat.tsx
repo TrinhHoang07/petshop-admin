@@ -10,7 +10,7 @@ import { AiOutlineSearch } from 'react-icons/ai';
 
 const cx = classNames.bind(styles);
 
-type TMes = {
+export type TMes = {
     role: string;
     message: string;
     id?: string;
@@ -22,10 +22,23 @@ function Chat(): JSX.Element {
     const socketRef = useRef<Socket>();
     const [messages, setMessages] = useState<TMes[]>([]);
     const [open, setOpen] = useState<boolean>(false);
+    const [seen, setSeen] = useState<string[]>([]);
     const [idUser, setIdUser] = useState<string>('');
+    const [isUser, setIsUser] = useState<boolean>(true);
 
     const renderUser = useMemo(() => {
-        return messages.filter((v: TMes, i, a: any[]) => a.findLastIndex((v2: TMes) => v2.id === v.id) === i);
+        console.log('messages: ', messages);
+
+        if (messages.length > 0 && messages[messages.length - 1].role === 'admin') {
+            setIsUser(false);
+        } else {
+            setIsUser(true);
+        }
+
+        return messages
+            .filter((item) => item.role === 'user')
+            .filter((v: TMes, i, a: TMes[]) => a.findLastIndex((v2: TMes) => v2.id === v.id) === i)
+            .reverse();
     }, [messages]);
 
     useEffect(() => {
@@ -39,6 +52,24 @@ function Chat(): JSX.Element {
             socketRef.current?.disconnect();
         };
     }, []);
+
+    useEffect(() => {
+        if (isUser && !open) {
+            const idNew = renderUser[0]?.id;
+
+            if (idNew) {
+                setSeen((prev) => {
+                    if (prev.indexOf(idNew) !== -1) {
+                        return [...prev];
+                    } else {
+                        return [...prev, idNew];
+                    }
+                });
+            }
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [renderUser]);
 
     useEffect(() => {
         if (socketRef.current) {
@@ -76,19 +107,23 @@ function Chat(): JSX.Element {
                 </div>
             </div>
             <div>
-                {renderUser.reverse().map((item: any) => {
-                    return (
-                        <div
-                            onClick={() => {
-                                setIdUser(() => item.id as string);
-                                setOpen(true);
-                            }}
-                            key={item.id}
-                        >
-                            <ChatItem item={item} />
-                        </div>
-                    );
-                })}
+                {renderUser
+                    .reverse()
+                    // .filter((item) => item.role === 'user')
+                    .map((item: TMes) => {
+                        return (
+                            <div
+                                onClick={() => {
+                                    setIdUser(item.id ?? '');
+                                    setOpen(true);
+                                    setSeen((prev) => prev.filter((iii) => iii !== item.id));
+                                }}
+                                key={item.id}
+                            >
+                                <ChatItem item={item} seen={seen} />
+                            </div>
+                        );
+                    })}
                 <ChatBoxTest
                     idUser={idUser}
                     setIdUser={setIdUser}
