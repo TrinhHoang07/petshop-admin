@@ -13,10 +13,8 @@ type T_Props = {
 };
 
 function ChatItem(props: T_Props) {
-    console.log('itemsssss: ', props.item.id);
-
     const socketRef = useRef<Socket>();
-    const [test, setTest] = useState<any>({});
+    const [idChats, setIdChats] = useState<any>({});
 
     useEffect(() => {
         const socket = io('http://localhost:3008', {
@@ -34,7 +32,7 @@ function ChatItem(props: T_Props) {
         if (socketRef.current) {
             socketRef.current.on('connect', () => {
                 socketRef.current?.on(`${props.item.id}`, (data) => {
-                    setTest((prev: any) => {
+                    setIdChats((prev: any) => {
                         return {
                             ...prev,
                             [`${props.item.id}`]: data,
@@ -43,7 +41,7 @@ function ChatItem(props: T_Props) {
                 });
 
                 socketRef.current?.on('user_sent', (data) => {
-                    setTest((prev: any) => {
+                    setIdChats((prev: any) => {
                         return {
                             ...prev,
                             [`${data.id}`]: data,
@@ -73,15 +71,10 @@ function ChatItem(props: T_Props) {
             <div className={cx('info-user')}>
                 <p className={cx('name-unknown')}>{props.item.name ?? 'Unknown'}</p>
                 <p className={cx('noti-mes')}>
-                    {/* {dataLastMessage.current
-                        ? dataLastMessage.current[`${props.item.id}`] === 'admin'
-                            ? 'Bạn: ' + lastMessage.message
-                            : lastMessage.message
-                        : props.item.message} */}
-                    {Object.keys(test).length && test[`${props.item.id}`]
-                        ? test[`${props.item.id}`].role === 'admin'
-                            ? 'Bạn: ' + test[`${props.item.id}`].message
-                            : test[`${props.item.id}`].message
+                    {Object.keys(idChats).length && idChats[`${props.item.id}`]
+                        ? idChats[`${props.item.id}`].role === 'admin'
+                            ? 'Bạn: ' + idChats[`${props.item.id}`].message
+                            : idChats[`${props.item.id}`].message
                         : props.item.message}
                 </p>
             </div>
