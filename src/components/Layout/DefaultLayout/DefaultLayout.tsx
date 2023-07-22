@@ -19,8 +19,10 @@ function DefaultLayout(props: TProps): JSX.Element {
             <SideBar isOpen={isSideBar} />
             <div className={cx('container')}>
                 <Header setIsOpen={setIsSideBar} isOpen={isSideBar} />
-                <div className={cx('contents')}>{props.children}</div>
-                <Footer />
+                <div className={cx('wrapper-contents')}>
+                    <div className={cx('contents')}>{props.children}</div>
+                    <Footer />
+                </div>
             </div>
         </div>
     );

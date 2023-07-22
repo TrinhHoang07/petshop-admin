@@ -7,7 +7,9 @@
     display: flex;
     flex-direction: column;
 
-    .contents {
+    .wrapper-contents {
         flex: 1;
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
     }
 }

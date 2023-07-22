@@ -5,6 +5,7 @@ import { Chat } from '../pages/Chat';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { NotFound } from '../pages/NotFound';
+import { Products } from '../pages/Products';
 
 type TRoutes = {
     id: number;
@@ -23,21 +24,28 @@ const routes: TRoutes[] = [
         protect: true,
     },
     {
-        id: 4,
+        id: 2,
         component: Chat,
         layout: DefaultLayout,
         path: routesConfig.chat,
         protect: true,
     },
     {
-        id: 2,
+        id: 3,
         component: Login,
         layout: NoLayout,
         path: routesConfig.login,
         protect: false,
     },
     {
-        id: 3,
+        id: 4,
+        component: Products,
+        layout: DefaultLayout,
+        path: routesConfig.products,
+        protect: true,
+    },
+    {
+        id: 100,
         component: NotFound,
         layout: NoLayout,
         path: routesConfig.notFound,

@@ -38,7 +38,7 @@ function SideBar({ isOpen }: { isOpen: boolean }) {
                         <span>Chats</span>
                     </div>
                 </NavLink>
-                <NavLink to={''} className={cx('link-wrapper')}>
+                <NavLink to={routesConfig.products} className={cx('link-wrapper')}>
                     <div className={cx('container-link')}>
                         <MdOutlinePets size={'2.5rem'} />
                         <span>Sản phẩm</span>
