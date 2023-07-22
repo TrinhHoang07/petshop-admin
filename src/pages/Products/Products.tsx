@@ -15,6 +15,7 @@ import { Products as I_Products } from '../../models/Products';
 const cx = classNames.bind(styles);
 
 export type _T_FormProducts = {
+    key: number;
     name: string;
     description?: string;
     sub_description?: string;
@@ -25,9 +26,9 @@ export type _T_FormProducts = {
     color?: string;
 };
 
-type sourceData = Omit<_T_FormProducts, 'sub_description' | 'preview_url'> & {
-    key: number;
-};
+// type sourceData = Omit<_T_FormProducts, 'sub_description' | 'preview_url'> & {
+//     key: number;
+// };
 
 function Products() {
     const [activeHeader, setActiveHeader] = useState<string>('all');
@@ -36,18 +37,19 @@ function Products() {
     const [isModalAdd, setIsModalAdd] = useState<boolean>(false);
     const [isModalUpdate, setIsModalUpdate] = useState<boolean>(false);
     const [data, setData] = useState<I_Products[]>([]);
-    const [dataSource, setDataSource] = useState<sourceData[]>([]);
+    const [dataSource, setDataSource] = useState<_T_FormProducts[]>([]);
     const [dataUpdate, setDataUpdate] = useState<_T_FormProducts>();
     const message = useAntContext();
     const [formAdd] = Form.useForm<_T_FormProducts>();
     const [formUpdate] = Form.useForm<_T_FormProducts>();
 
-    const handleFilterData = (data: I_Products[], type?: string) => {
+    const handleFilterData = (data: I_Products[], type?: string): _T_FormProducts[] => {
         if (type) {
             return data
                 .filter((item: I_Products) => item.type === type)
                 .map((item: I_Products) => ({
                     key: item.id,
+                    preview_url: item.preview_url,
                     name: item.name,
                     description: item.description,
                     type: item.type,
@@ -61,6 +63,7 @@ function Products() {
             key: item.id,
             name: item.name,
             description: item.description,
+            preview_url: item.preview_url,
             type: item.type,
             price: item.price,
             quantity: item.quantity,
@@ -71,7 +74,7 @@ function Products() {
     useEffect(() => {
         fetch('http://localhost:3009/products/all')
             .then((res) => res.json())
-            .then((data) => {
+            .then((data: I_Products[]) => {
                 setData(data);
             })
             .catch((err) => console.log(err));
@@ -163,6 +166,7 @@ function Products() {
                             onClick={() => {
                                 setIsModalUpdate(true);
                                 setDataUpdate(() => ({
+                                    key: item.key,
                                     name: item.name,
                                     preview_url: item.preview_url,
                                     price: item.price,
@@ -177,7 +181,22 @@ function Products() {
                         >
                             Sửa
                         </Button>
-                        <Button style={{ marginLeft: '8px' }} type="default">
+                        <Button
+                            onClick={() => {
+                                message?.modal.confirm({
+                                    title: 'Thông báo',
+                                    content: 'Bạn có chắc chắn muốn xóa không?',
+                                    okText: 'Xóa',
+                                    cancelText: 'Hủy',
+                                    onOk: () => {
+                                        console.log('id delete: ', item.key);
+                                        // CALL API DELETE HERE
+                                    },
+                                });
+                            }}
+                            style={{ marginLeft: '8px' }}
+                            type="default"
+                        >
                             Xóa
                         </Button>
                     </>
