@@ -5,6 +5,7 @@ import reportWebVitals from './reportWebVitals';
 import { RecoilRoot } from 'recoil';
 import { GlobalStyles } from './components/GlobalStyles';
 import SessionContextProvider from './contexts/SessionContext';
+import { AntContextProvider } from './contexts/AntContexts';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
@@ -12,7 +13,9 @@ root.render(
         <GlobalStyles>
             <RecoilRoot>
                 <SessionContextProvider>
-                    <App />
+                    <AntContextProvider>
+                        <App />
+                    </AntContextProvider>
                 </SessionContextProvider>
             </RecoilRoot>
         </GlobalStyles>
