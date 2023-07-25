@@ -11,6 +11,8 @@ import ModalAddProducts from './ModalAddProduct';
 import ModalUpdateProducts from './ModalUpdateProduct';
 import { Loading } from '../../components/Loading';
 import { Products as I_Products } from '../../models/Products';
+import { ApiService } from '../../axios/ApiService';
+import { AxiosClientApi } from '../../axios/axiosInstance';
 
 const cx = classNames.bind(styles);
 
@@ -31,6 +33,10 @@ export type _T_FormProducts = {
 // };
 
 function Products() {
+    const apiService = new ApiService();
+
+    console.log(process.env.REACT_APP_API_TOKEN);
+
     const [activeHeader, setActiveHeader] = useState<string>('all');
     const [description, setDescription] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -72,12 +78,21 @@ function Products() {
     };
 
     useEffect(() => {
-        fetch('http://localhost:3009/products/all')
-            .then((res) => res.json())
+        apiService.products
+            .getProducts()
             .then((data: I_Products[]) => {
+                console.log(data);
+
                 setData(data);
             })
             .catch((err) => console.log(err));
+
+        // fetch('http://localhost:3009/products/all')
+        //     .then((res) => res.json())
+        //     .then((data: I_Products[]) => {
+        //         setData(data);
+        //     })
+        //     .catch((err) => console.log(err));
     }, []);
 
     useEffect(() => {
@@ -190,7 +205,17 @@ function Products() {
                                     cancelText: 'Hủy',
                                     onOk: () => {
                                         console.log('id delete: ', item.key);
-                                        // CALL API DELETE HERE
+
+                                        apiService.products
+                                            .deleteProduct(item.key.toString())
+                                            .then((res) => {
+                                                console.log(res);
+
+                                                if (res.message === 'success') {
+                                                    message.message.success('Xóa thành công!').then();
+                                                }
+                                            })
+                                            .catch((err) => console.error(err));
                                     },
                                 });
                             }}

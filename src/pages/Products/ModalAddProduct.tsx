@@ -4,6 +4,7 @@ import { Modal, Form, Input, InputNumber, Select, FormInstance } from 'antd';
 import { useEffect } from 'react';
 import { useAntContext } from '../../contexts/AntContexts';
 import { _T_FormProducts } from './Products';
+import { ApiService } from '../../axios/ApiService';
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +15,7 @@ type T_Props = {
 };
 
 function ModalAddProducts(props: T_Props) {
+    const apiService = new ApiService();
     const message = useAntContext();
 
     useEffect(() => {
@@ -24,7 +26,16 @@ function ModalAddProducts(props: T_Props) {
 
     const handleFinish = (values: _T_FormProducts) => {
         console.log('values: ', values);
-        // CALL API HERE
+
+        apiService.products
+            .createProduct(values)
+            .then((res) => {
+                if (res.success) {
+                    message?.message.success('Thêm thành công!').then();
+                    props.setOpen(false);
+                }
+            })
+            .catch((err) => console.log(err));
     };
 
     const handleFinishError = () => {
