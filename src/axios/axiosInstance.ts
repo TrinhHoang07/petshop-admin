@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
+import { Helper } from '../helper';
 
 type _T_AxiosOpts = {
     url?: {
@@ -18,11 +19,17 @@ export class AxiosClientApi {
             config: config,
         });
 
+        let queryUrl = '';
+
+        if (query) {
+            queryUrl += '?query=' + Helper.base64Encode(query);
+        }
+
         return request
             .getClient()
             .request({
                 method: 'get',
-                url: path,
+                url: path + queryUrl,
             })
             .then((res) => res.data);
     }

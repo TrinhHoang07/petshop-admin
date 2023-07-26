@@ -12,7 +12,6 @@ import ModalUpdateProducts from './ModalUpdateProduct';
 import { Loading } from '../../components/Loading';
 import { Products as I_Products } from '../../models/Products';
 import { ApiService } from '../../axios/ApiService';
-import { AxiosClientApi } from '../../axios/axiosInstance';
 
 const cx = classNames.bind(styles);
 
@@ -93,6 +92,8 @@ function Products() {
         //         setData(data);
         //     })
         //     .catch((err) => console.log(err));
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
