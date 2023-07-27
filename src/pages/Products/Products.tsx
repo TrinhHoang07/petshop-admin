@@ -86,13 +86,6 @@ function Products() {
             })
             .catch((err) => console.log(err));
 
-        // fetch('http://localhost:3009/products/all')
-        //     .then((res) => res.json())
-        //     .then((data: I_Products[]) => {
-        //         setData(data);
-        //     })
-        //     .catch((err) => console.log(err));
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

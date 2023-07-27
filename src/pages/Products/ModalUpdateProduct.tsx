@@ -57,10 +57,10 @@ function ModalUpdateProducts(props: T_Props) {
     return (
         <Modal
             open={props.open}
-            title="Thêm sản phẩm mới"
+            title="Cập nhật sản phẩm"
             onCancel={() => props.setOpen(false)}
             width={'50%'}
-            okText="Thêm mới"
+            okText="Cập nhật"
             onOk={() => props.form.submit()}
             forceRender
         >

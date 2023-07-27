@@ -44,7 +44,7 @@ function SideBar({ isOpen }: { isOpen: boolean }) {
                         <span>Sản phẩm</span>
                     </div>
                 </NavLink>
-                <NavLink to={''} className={cx('link-wrapper')}>
+                <NavLink to={routesConfig.customers} className={cx('link-wrapper')}>
                     <div className={cx('container-link')}>
                         <CiUser size={'2.5rem'} />
                         <span>Người dùng</span>

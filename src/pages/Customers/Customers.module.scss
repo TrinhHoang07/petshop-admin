@@ -1,0 +1,60 @@
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background-color: #22222f;
+    position: sticky;
+    right: 0;
+    left: 0;
+    top: 0;
+    z-index: 999;
+
+    .list-options {
+        display: flex;
+        align-items: center;
+
+        .item-option {
+            display: flex;
+            align-items: center;
+            padding-right: 24px;
+            transition: all 0.2s ease-out;
+            color: var(--sidebar-color);
+
+            &:hover {
+                color: #fff;
+                cursor: pointer;
+            }
+
+            span {
+                display: flex;
+            }
+
+            p {
+                margin-left: 8px;
+                padding: 0;
+            }
+        }
+    }
+
+    .actions {
+        .add-products {
+            border-radius: 4px;
+            background-color: #857dcc;
+            color: #fff;
+
+            &:hover {
+                background-color: #776fb9;
+            }
+        }
+    }
+}
+
+.wrapper {
+    min-height: calc(100vh - 80px - 72px - 48px);
+
+    .wrapper-loading {
+        min-height: calc(100vh - 80px - 72px - 48px);
+        display: flex;
+    }
+}

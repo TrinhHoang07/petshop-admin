@@ -13,3 +13,14 @@ export interface Products {
     updated_at?: string;
     deleted_at?: string;
 }
+
+export interface Customers {
+    id: number;
+    name: string;
+    gender: string;
+    email: string;
+    address: string;
+    phoneNumber: string;
+    birthDate: string;
+    avatarPath: string;
+}
