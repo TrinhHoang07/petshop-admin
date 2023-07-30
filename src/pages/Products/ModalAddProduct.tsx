@@ -1,9 +1,10 @@
 import classNames from 'classnames/bind';
 import styles from './Products.module.scss';
 import { Modal, Form, Input, InputNumber, Select, FormInstance } from 'antd';
-import { useEffect } from 'react';
+import { Dispatch, useEffect } from 'react';
 import { useAntContext } from '../../contexts/AntContexts';
 import { _T_FormProducts } from './Products';
+import { Products as I_Products } from '../../models/Products';
 import { ApiService } from '../../axios/ApiService';
 
 const cx = classNames.bind(styles);
@@ -12,6 +13,7 @@ type T_Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
     form: FormInstance;
+    setData: Dispatch<React.SetStateAction<I_Products[]>>;
 };
 
 function ModalAddProducts(props: T_Props) {
@@ -31,7 +33,24 @@ function ModalAddProducts(props: T_Props) {
             .createProduct(values)
             .then((res) => {
                 if (res.success) {
+                    console.log(res);
                     message?.message.success('Thêm thành công!').then();
+                    props.setData((prev) => [
+                        ...prev,
+                        {
+                            id: res.data.id,
+                            name: res.data.name,
+                            preview_url: res.data.preview_url,
+                            price: res.data.price,
+                            quantity: res.data.quantity,
+                            rate: res.data.rate,
+                            type: res.data.type,
+                            color: res.data.color,
+                            description: res.data.description,
+                            sub_description: res.data.sub_description,
+                            created_at: res.data.created_at,
+                        },
+                    ]);
                     props.setOpen(false);
                 }
             })

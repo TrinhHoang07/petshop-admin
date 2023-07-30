@@ -37,7 +37,7 @@ export class ApiService {
 
     get customers() {
         const route = {
-            createCustomer: 'admin//customers/create',
+            createCustomer: 'admin/customers/create',
             updateCustomer: (id: string) => `update/${id}`,
             deleteCustomer: (id: string) => `admin/customers/delete/${id}`,
             getCustomer: (id: string) => `customer/${id}`,

@@ -50,6 +50,11 @@
     }
 }
 
+.form-container {
+    height: calc(50vh);
+    overflow-y: auto;
+}
+
 .wrapper {
     min-height: calc(100vh - 80px - 72px - 48px);
 

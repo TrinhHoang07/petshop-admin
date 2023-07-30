@@ -1,12 +1,24 @@
 import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Customers.module.scss';
-import { Button, Table } from 'antd';
+import { Button, Form, Table } from 'antd';
 import { useAntContext } from '../../contexts/AntContexts';
 import { Customers } from '../../models/Products';
 import { ApiService } from '../../axios/ApiService';
 import { Loading } from '../../components/Loading';
 import { FaCat } from 'react-icons/fa';
+import ModalAddCustomer from './ModalAddCustomer';
+
+export type TFormAdd = {
+    name: string;
+    password: string;
+    email: string;
+    address?: string;
+    gender?: string;
+    phone_number?: string;
+    avatar_path?: string;
+    birth_date?: string;
+};
 
 const cx = classNames.bind(styles);
 
@@ -14,6 +26,8 @@ function CustomersScreen() {
     const message = useAntContext();
     const [dataSource, setDataSource] = useState<Customers[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isModalAdd, setIsModalAdd] = useState<boolean>(false);
+    const [form] = Form.useForm<TFormAdd>();
     const apiService = new ApiService();
 
     useEffect(() => {
@@ -24,6 +38,7 @@ function CustomersScreen() {
                     setDataSource(
                         res.data.map((item: any) => ({
                             key: item.id,
+                            id: item.id,
                             name: item.name,
                             gender: item.gender,
                             email: item.email,
@@ -48,8 +63,8 @@ function CustomersScreen() {
         () => [
             {
                 title: 'STT',
-                dataIndex: 'key',
-                key: 'stt',
+                dataIndex: 'id',
+                key: 'id',
             },
             {
                 title: 'Name',
@@ -79,7 +94,7 @@ function CustomersScreen() {
             {
                 title: 'Actions',
                 key: 'actions',
-                render: (item: any) => (
+                render: (item: Customers) => (
                     <Button
                         onClick={() => {
                             message?.modal.confirm({
@@ -88,13 +103,15 @@ function CustomersScreen() {
                                 okText: 'Xóa',
                                 cancelText: 'Hủy',
                                 onOk: () => {
-                                    console.log('id delete: ', item.key);
+                                    console.log('id delete: ', item);
+                                    console.log('data source: ', dataSource);
 
                                     apiService.customers
-                                        .deleteCustomer(item.key.toString())
+                                        .deleteCustomer(item.id.toString())
                                         .then((res) => {
                                             if (res.message === 'success') {
                                                 message.message.success('Xóa thành công!').then();
+                                                setDataSource((prev) => prev.filter((data) => data.id !== item.id));
                                             }
                                         })
                                         .catch((err) => console.log(err));
@@ -126,9 +143,20 @@ function CustomersScreen() {
                     </div>
                 </div>
                 <div className={cx('actions')}>
-                    <Button className={cx('add-products')} type="primary" size="large">
+                    <Button
+                        onClick={() => setIsModalAdd(true)}
+                        className={cx('add-products')}
+                        type="primary"
+                        size="large"
+                    >
                         Thêm Người Dùng
                     </Button>
+                    <ModalAddCustomer
+                        form={form}
+                        open={isModalAdd}
+                        setOpen={setIsModalAdd}
+                        setDataSource={setDataSource}
+                    />
                 </div>
             </div>
             <div className={cx('wrapper')}>

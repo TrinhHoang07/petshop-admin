@@ -34,8 +34,6 @@ export type _T_FormProducts = {
 function Products() {
     const apiService = new ApiService();
 
-    console.log(process.env.REACT_APP_API_TOKEN);
-
     const [activeHeader, setActiveHeader] = useState<string>('all');
     const [description, setDescription] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -113,7 +111,7 @@ function Products() {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeHeader]);
+    }, [activeHeader, data]);
 
     const columns = useMemo(
         () => [
@@ -207,6 +205,12 @@ function Products() {
 
                                                 if (res.message === 'success') {
                                                     message.message.success('Xóa thành công!').then();
+
+                                                    setData((prev) => prev.filter((data) => data.id !== item.key));
+
+                                                    // setDataSource((prev) =>
+                                                    //     prev.filter((data) => data.key !== item.key),
+                                                    // );
                                                 }
                                             })
                                             .catch((err) => console.error(err));
@@ -288,7 +292,7 @@ function Products() {
                     >
                         Thêm Sản Phẩm
                     </Button>
-                    <ModalAddProducts form={formAdd} open={isModalAdd} setOpen={setIsModalAdd} />
+                    <ModalAddProducts form={formAdd} open={isModalAdd} setOpen={setIsModalAdd} setData={setData} />
                 </div>
             </div>
             <div className={cx('contents')}>
@@ -305,6 +309,7 @@ function Products() {
                     open={isModalUpdate}
                     setOpen={setIsModalUpdate}
                     data={dataUpdate}
+                    setData={setData}
                 />
             </div>
         </div>

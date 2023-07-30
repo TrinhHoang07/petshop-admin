@@ -1,9 +1,10 @@
 import classNames from 'classnames/bind';
 import styles from './Products.module.scss';
 import { Modal, Form, Input, InputNumber, Select, FormInstance } from 'antd';
-import { useEffect } from 'react';
+import { Dispatch, useEffect } from 'react';
 import { useAntContext } from '../../contexts/AntContexts';
 import { _T_FormProducts } from './Products';
+import { Products as I_Products } from '../../models/Products';
 import { ApiService } from '../../axios/ApiService';
 
 const cx = classNames.bind(styles);
@@ -13,6 +14,7 @@ type T_Props = {
     setOpen: (open: boolean) => void;
     data: _T_FormProducts | undefined;
     form: FormInstance;
+    setData: Dispatch<React.SetStateAction<I_Products[]>>;
 };
 
 function ModalUpdateProducts(props: T_Props) {
@@ -43,6 +45,26 @@ function ModalUpdateProducts(props: T_Props) {
 
                     if (res.message === 'success') {
                         message?.message.success('Cập nhật thành công!').then();
+                        props.setData((prev) => {
+                            const data = [...prev];
+                            const index = data.findIndex((item) => item.id === props.data?.key);
+
+                            if (index !== -1) {
+                                data[index] = {
+                                    ...data[index],
+                                    name: values.name,
+                                    preview_url: values.preview_url,
+                                    price: values.price,
+                                    quantity: values.quantity,
+                                    type: values.type,
+                                    color: values.color,
+                                    description: values.description,
+                                    sub_description: values.sub_description,
+                                };
+                            }
+
+                            return data;
+                        });
                         props.setOpen(false);
                     }
                 })
