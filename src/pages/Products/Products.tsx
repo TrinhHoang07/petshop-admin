@@ -106,6 +106,9 @@ function Products() {
             case 'food':
                 setDataSource(handleFilterData(data, 'food'));
                 break;
+            case 'accessory':
+                setDataSource(handleFilterData(data, 'accessory'));
+                break;
             default:
                 setDataSource(handleFilterData(data));
         }
@@ -244,7 +247,7 @@ function Products() {
                         <span>
                             <MdPets size={'2rem'} />
                         </span>
-                        <p>Tất Cả</p>
+                        <p>Tất cả</p>
                     </div>
                     <div
                         onClick={() => setActiveHeader('dog')}
@@ -256,7 +259,7 @@ function Products() {
                         <span>
                             <FaDog size={'2rem'} />
                         </span>
-                        <p>Chó Cưng</p>
+                        <p>Chó cưng</p>
                     </div>
                     <div
                         onClick={() => setActiveHeader('cat')}
@@ -268,7 +271,7 @@ function Products() {
                         <span>
                             <FaCat size={'2rem'} />
                         </span>
-                        <p>Mèo Cưng</p>
+                        <p>Mèo cưng</p>
                     </div>
                     <div
                         onClick={() => setActiveHeader('food')}
@@ -280,7 +283,19 @@ function Products() {
                         <span>
                             <GiOpenedFoodCan size={'2rem'} />
                         </span>
-                        <p>Đồ Ăn</p>
+                        <p>Đồ ăn</p>
+                    </div>
+                    <div
+                        onClick={() => setActiveHeader('accessory')}
+                        style={{
+                            color: activeHeader === 'accessory' ? '#fff' : '',
+                        }}
+                        className={cx('item-option')}
+                    >
+                        <span>
+                            <GiOpenedFoodCan size={'2rem'} />
+                        </span>
+                        <p>Phụ kiện</p>
                     </div>
                 </div>
                 <div className={cx('actions')}>
