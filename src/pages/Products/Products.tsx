@@ -59,6 +59,7 @@ function Products() {
                     price: item.price,
                     quantity: item.quantity,
                     color: item.color,
+                    sub_description: item.sub_description,
                 }));
         }
 
@@ -71,6 +72,7 @@ function Products() {
             price: item.price,
             quantity: item.quantity,
             color: item.color,
+            sub_description: item.sub_description,
         }));
     };
 
