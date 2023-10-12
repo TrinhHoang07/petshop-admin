@@ -79,10 +79,10 @@ function Products() {
     useEffect(() => {
         apiService.products
             .getProducts()
-            .then((data: I_Products[]) => {
+            .then((data: { message: string; statusCode: number; data: I_Products[] }) => {
                 console.log(data);
 
-                setData(data);
+                setData(data.data);
             })
             .catch((err) => console.log(err));
 
