@@ -1,0 +1,76 @@
+.wrapper {
+    padding: 32px;
+    background-color: #181924;
+
+    .header-home {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 0 -12px;
+    }
+
+    .popular-container {
+        margin-top: 32px;
+
+        h3 {
+            font-size: 2rem;
+            color: #fff;
+            text-transform: uppercase;
+            opacity: 0.88;
+            padding-bottom: 16px;
+        }
+
+        .slider-popular-week {
+            max-width: calc(100vw - 450px);
+            overflow: hidden;
+            display: flex;
+            margin: auto;
+
+            .item-popular {
+                user-select: none;
+                cursor: pointer;
+                text-align: center;
+                background-image: url('https://cdn.tgdd.vn/Files/2021/04/22/1345443/dac-diem-nhan-dien-cach-nuoi-meo-anh-long-ngan-202104221526171965.jpg');
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                height: 250px;
+                border-radius: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: flex-end;
+
+                .info-popu {
+                    margin-bottom: 16px;
+
+                    h1 {
+                        font-size: 2.4rem;
+                        color: #fff;
+                        opacity: 0.88;
+                        font-weight: 500;
+                        text-shadow: 1px 1px dodgerblue;
+                    }
+
+                    button {
+                        margin-top: 8px;
+                        font-size: 1.2rem;
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 2px;
+                        background-color: #857dcc;
+                        color: #fff;
+                        cursor: pointer;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .chart-statistical {
+        margin-top: 32px;
+    }
+}
