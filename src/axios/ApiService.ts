@@ -54,4 +54,16 @@ export class ApiService {
             route: route,
         };
     }
+
+    get orders() {
+        const route = {
+            getOrders: 'admin/orders/all',
+        };
+
+        return {
+            getOrders: (query?: any): Promise<any> => AxiosClientApi.get(route.getOrders, query),
+
+            route,
+        };
+    }
 }

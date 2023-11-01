@@ -50,7 +50,7 @@ function SideBar({ isOpen }: { isOpen: boolean }) {
                         <span>Người dùng</span>
                     </div>
                 </NavLink>
-                <NavLink to={''} className={cx('link-wrapper')}>
+                <NavLink to={routesConfig.orders} className={cx('link-wrapper')}>
                     <div className={cx('container-link')}>
                         <AiOutlineShoppingCart size={'2.5rem'} />
                         <span>Đơn hàng</span>

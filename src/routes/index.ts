@@ -6,6 +6,7 @@ import { Customers } from '../pages/Customers';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
 import { NotFound } from '../pages/NotFound';
+import { Orders } from '../pages/Orders';
 import { Products } from '../pages/Products';
 
 type TRoutes = {
@@ -50,6 +51,13 @@ const routes: TRoutes[] = [
         component: Customers,
         layout: DefaultLayout,
         path: routesConfig.customers,
+        protect: true,
+    },
+    {
+        id: 6,
+        component: Orders,
+        layout: DefaultLayout,
+        path: routesConfig.orders,
         protect: true,
     },
     {

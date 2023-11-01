@@ -4,6 +4,7 @@ const routesConfig = {
     customers: '/customers',
     chat: '/chat',
     login: '/login',
+    orders: '/orders',
     notFound: '*',
 };
 
