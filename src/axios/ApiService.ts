@@ -58,10 +58,12 @@ export class ApiService {
     get orders() {
         const route = {
             getOrders: 'admin/orders/all',
+            updateStatus: (id: string) => `admin/orders/status/${id}`,
         };
 
         return {
             getOrders: (query?: any): Promise<any> => AxiosClientApi.get(route.getOrders, query),
+            updateStatus: (id: string, data: any) => AxiosClientApi.put(route.updateStatus(id), data),
 
             route,
         };

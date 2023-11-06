@@ -37,6 +37,7 @@ function ChatBox(props: _T_Props) {
     // scroll to message latest
     useEffect(() => {
         scrollToBottom();
+        inputRef.current?.focus();
     }, [props.open, props.messages]);
 
     useEffect(() => {

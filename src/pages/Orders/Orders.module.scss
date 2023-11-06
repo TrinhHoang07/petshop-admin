@@ -1,11 +1,11 @@
 .orders {
-    overflow: hidden;
     width: 100%;
 
     .contents {
+        min-height: calc(100vh - 48px - 80px);
         .wrapper-loading {
+            min-height: calc(100vh - 48px - 80px);
             display: flex;
-            min-height: calc(100vh - 80px - 48px);
             justify-content: center;
         }
     }

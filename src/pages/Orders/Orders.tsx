@@ -3,8 +3,9 @@ import classNames from 'classnames/bind';
 import styles from './Orders.module.scss';
 import { ApiService } from '../../axios/ApiService';
 import { Orders as IOrders } from '../../models/Orders';
-import { Table } from 'antd';
+import { Button, Modal, Select, Table } from 'antd';
 import { Loading } from '../../components/Loading';
+import { useAntContext } from '../../contexts/AntContexts';
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +17,13 @@ function Orders() {
     // const [dataSource, setDataSource] = useState<Orders[]>([]);
     const [data, setData] = useState<IOrders[]>([]);
     const [dataSource, setDataSource] = useState<_IDataOrders[]>([]);
+    const [status, setStatus] = useState<{
+        status: string;
+        id: number;
+    }>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const message = useAntContext();
     const apiService = new ApiService();
 
     useEffect(() => {
@@ -114,10 +121,29 @@ function Orders() {
                 title: 'Actions',
                 key: 'actions',
                 render: (item: any) => (
-                    <>
-                        <p>hehehe</p>
-                        <p>hehehe</p>
-                    </>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Button
+                            style={{ marginRight: '8px' }}
+                            onClick={() => {
+                                setStatus({
+                                    id: item.orders_id,
+                                    status: item.orders_status,
+                                });
+                                setIsOpen(true);
+                            }}
+                            type="primary"
+                        >
+                            Sửa
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                alert('huy don hang!');
+                            }}
+                            type="default"
+                        >
+                            Hủy đơn
+                        </Button>
+                    </div>
                 ),
             },
         ],
@@ -127,6 +153,68 @@ function Orders() {
 
     return (
         <div className={cx('orders')}>
+            <Modal
+                open={isOpen}
+                onCancel={() => setIsOpen(false)}
+                footer={
+                    <>
+                        <Button
+                            type="primary"
+                            onClick={() => {
+                                apiService.orders
+                                    .updateStatus((status?.id as number).toString(), {
+                                        status: status?.status,
+                                    })
+                                    .then((res) => {
+                                        if (res.message === 'success') {
+                                            message?.message.success('Update thành công!').then();
+
+                                            ////// testttttt => no OK
+                                            apiService.orders
+                                                .getOrders()
+                                                .then((res) => {
+                                                    if (res.message === 'success') {
+                                                        setData(res.data as IOrders[]);
+                                                        setIsOpen(false);
+                                                    }
+                                                })
+                                                .catch((err) => console.error(err));
+                                        } else {
+                                            message?.message.error('Update thất bại, vui lòng thử lại!').then();
+                                            setIsOpen(false);
+                                        }
+                                    })
+                                    .catch((err) => console.error(err));
+                            }}
+                        >
+                            Ok
+                        </Button>
+                        <Button type="default" onClick={() => setIsOpen(false)}>
+                            Hủy
+                        </Button>
+                    </>
+                }
+                title="Trạng thái đơn hàng"
+            >
+                <Select
+                    value={status?.status}
+                    style={{ width: '100%' }}
+                    onChange={(value: string) => {
+                        setStatus((prev: any) => {
+                            return {
+                                ...prev,
+                                status: value,
+                            };
+                        });
+                    }}
+                    options={[
+                        { value: 'processing', label: 'Processing' },
+                        { value: 'shipping', label: 'Shipping' },
+                        { value: 'finished', label: 'Finished' },
+                    ]}
+                />
+            </Modal>
+
             <div className={cx('contents')}>
                 {isLoading ? (
                     <div className={cx('wrapper-loading')}>
