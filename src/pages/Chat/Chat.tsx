@@ -6,6 +6,7 @@ import { Socket, io } from 'socket.io-client';
 import { ChatBoxTest } from '../../components/Layout/components/ChatBoxTest';
 import ChatItem from './ChatItem';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { Helper } from '../../helper';
 // import { ChatBoxTest } from '../../components/Layout/components/ChatBoxTest';
 
 const cx = classNames.bind(styles);
@@ -16,6 +17,8 @@ export type TMes = {
     id?: string;
     name: string;
 };
+
+///////// CHƯA FORCUS VÀO INPUT KHI CHUYỂN SANG USER KHÁC => CHƯA FIX
 
 function Chat(): JSX.Element {
     // test chats
@@ -40,6 +43,18 @@ function Chat(): JSX.Element {
             .filter((v: TMes, i, a: TMes[]) => a.findLastIndex((v2: TMes) => v2.id === v.id) === i)
             .reverse();
     }, [messages]);
+
+    useEffect(() => {
+        const data = sessionStorage.getItem('messages-admin');
+
+        if (data) {
+            const values = JSON.parse(data) as TMes[];
+
+            if (values.length > 0) {
+                setMessages(values);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         const socket = io('http://localhost:3008', {
@@ -86,6 +101,12 @@ function Chat(): JSX.Element {
                             id: data.id,
                         },
                     ]);
+                    Helper.handleCreateOrSaveMessage({
+                        message: data.message,
+                        name: data.name,
+                        role: data.role,
+                        id: data.id,
+                    });
                 });
             });
 

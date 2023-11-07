@@ -7,6 +7,7 @@ import logo from '../../../../assets/images/logo-petshop.jpg';
 import cat from '../../../../assets/images/meoww.jpg';
 import { useEffect, useRef, useState, SetStateAction, Dispatch, useMemo } from 'react';
 import { Typing } from '../Typing';
+import { Helper } from '../../../../helper';
 
 const cx = classNames.bind(styles);
 type TMes = {
@@ -25,6 +26,8 @@ type _T_Props = {
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
 };
+
+///////// CHƯA FORCUS VÀO INPUT KHI CHUYỂN SANG USER KHÁC => CHƯA FIX
 
 function ChatBox(props: _T_Props) {
     const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -96,6 +99,7 @@ function ChatBox(props: _T_Props) {
                 ...prev,
                 { message: value, name: 'Van Hoang', role: 'admin', id: props.idUser },
             ]);
+            Helper.handleCreateOrSaveMessage({ message: value, name: 'Van Hoang', role: 'admin', id: props.idUser });
             setValue('');
             inputRef.current && inputRef.current.focus();
         }
