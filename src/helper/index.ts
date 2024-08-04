@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { TMes } from '../pages/Chat/Chat';
 
 export class Helper {
@@ -19,4 +20,13 @@ export class Helper {
             sessionStorage.setItem('messages-admin', JSON.stringify([message]));
         }
     }
+
+    static formatTime(time: string) {
+        return moment(time).format('DD/MM/YYYY HH:mm');
+    }
+
+    static formatVND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
 }

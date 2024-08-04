@@ -6,6 +6,7 @@ import { Orders as IOrders } from '../../models/Orders';
 import { Button, Modal, Select, Table } from 'antd';
 import { Loading } from '../../components/Loading';
 import { useAntContext } from '../../contexts/AntContexts';
+import { Helper } from '../../helper';
 
 const cx = classNames.bind(styles);
 
@@ -96,6 +97,11 @@ function Orders() {
                 title: 'Create order',
                 dataIndex: 'orders_created_at',
                 key: 'orders_created_at',
+                render: (item: string) => (
+                    <div>
+                        <p>{Helper.formatTime(item)}</p>
+                    </div>
+                ),
             },
             {
                 title: 'Quantity',
@@ -106,11 +112,21 @@ function Orders() {
                 title: 'Price',
                 dataIndex: 'product_price',
                 key: 'price',
+                render: (item: number) => (
+                    <div>
+                        <p>{Helper.formatVND.format(item)}</p>
+                    </div>
+                ),
             },
             {
                 title: 'Total Amount',
                 dataIndex: 'orders_price',
                 key: 'total_amount',
+                render: (item: number) => (
+                    <div>
+                        <p>{Helper.formatVND.format(item)}</p>
+                    </div>
+                ),
             },
             {
                 title: 'Status',
