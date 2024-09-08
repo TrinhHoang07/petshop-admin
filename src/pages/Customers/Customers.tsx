@@ -8,6 +8,9 @@ import { ApiService } from '../../axios/ApiService';
 import { Loading } from '../../components/Loading';
 import { FaCat } from 'react-icons/fa';
 import ModalAddCustomer from './ModalAddCustomer';
+import { useAppContext } from '../../providers/AppProvider';
+import { socketContext } from '../../contexts/socketContext';
+import { Helper } from '../../helper';
 
 export type TFormAdd = {
     name: string;
@@ -29,6 +32,24 @@ function CustomersScreen() {
     const [isModalAdd, setIsModalAdd] = useState<boolean>(false);
     const [form] = Form.useForm<TFormAdd>();
     const apiService = new ApiService();
+    const { isConnected } = useAppContext();
+
+    useEffect(() => {
+        socketContext.on('user_sent', (data) => {
+            Helper.handleCreateOrSaveMessage({
+                message: data.message,
+                name: data.name,
+                role: data.role,
+                id: data.id,
+            });
+        });
+
+        return () => {
+            socketContext.off('user_sent');
+        };
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isConnected]);
 
     useEffect(() => {
         apiService.customers

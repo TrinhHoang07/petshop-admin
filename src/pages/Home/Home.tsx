@@ -8,12 +8,33 @@ import Chart from 'chart.js/auto';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import './custom.scss';
+import { socketContext } from '../../contexts/socketContext';
+import { Helper } from '../../helper';
+import { useAppContext } from '../../providers/AppProvider';
 
 const cx = classNames.bind(styles);
 
 function Home(): JSX.Element {
     const chartRef = useRef<HTMLCanvasElement>(null);
     const chart = useRef<any>();
+    const { isConnected } = useAppContext();
+
+    useEffect(() => {
+        socketContext.on('user_sent', (data) => {
+            Helper.handleCreateOrSaveMessage({
+                message: data.message,
+                name: data.name,
+                role: data.role,
+                id: data.id,
+            });
+        });
+
+        return () => {
+            socketContext.off('user_sent');
+        };
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isConnected]);
 
     useEffect(() => {
         if (chartRef.current) {
@@ -128,58 +149,60 @@ function Home(): JSX.Element {
             <div className={cx('popular-container')}>
                 <h3>sản phẩm bán chạy nhất tuần</h3>
                 <div className={cx('slider-popular-week')}>
-                    <Swiper
-                        className={'popupar-week-swiper'}
-                        slidesPerView={3}
-                        autoplay={{
-                            delay: 2000,
-                            disableOnInteraction: false,
-                        }}
-                        modules={[Navigation, Autoplay]}
-                        spaceBetween={16}
-                        navigation
-                    >
-                        <SwiperSlide>
-                            <div className={cx('item-popular')}>
-                                <div className={cx('info-popu')}>
-                                    <h1>Mèo Anh Lông Ngắn</h1>
-                                    <button>Xem thêm</button>
+                    <div>
+                        <Swiper
+                            className={'popupar-week-swiper'}
+                            slidesPerView={3}
+                            autoplay={{
+                                delay: 2000,
+                                disableOnInteraction: false,
+                            }}
+                            modules={[Navigation, Autoplay]}
+                            spaceBetween={16}
+                            navigation
+                        >
+                            <SwiperSlide>
+                                <div className={cx('item-popular')}>
+                                    <div className={cx('info-popu')}>
+                                        <h1>Mèo Anh Lông Ngắn</h1>
+                                        <button>Xem thêm</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className={cx('item-popular')}>
-                                <div className={cx('info-popu')}>
-                                    <h1>Chó Alaska</h1>
-                                    <button>Xem thêm</button>
+                            </SwiperSlide>
+                            <SwiperSlide>
+                                <div className={cx('item-popular')}>
+                                    <div className={cx('info-popu')}>
+                                        <h1>Chó Alaska</h1>
+                                        <button>Xem thêm</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className={cx('item-popular')}>
-                                <div className={cx('info-popu')}>
-                                    <h1>Mèo Anh Lông Dài</h1>
-                                    <button>Xem thêm</button>
+                            </SwiperSlide>
+                            <SwiperSlide>
+                                <div className={cx('item-popular')}>
+                                    <div className={cx('info-popu')}>
+                                        <h1>Mèo Anh Lông Dài</h1>
+                                        <button>Xem thêm</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className={cx('item-popular')}>
-                                <div className={cx('info-popu')}>
-                                    <h1>Chó Cỏ Việt Nam</h1>
-                                    <button>Xem thêm</button>
+                            </SwiperSlide>
+                            <SwiperSlide>
+                                <div className={cx('item-popular')}>
+                                    <div className={cx('info-popu')}>
+                                        <h1>Chó Cỏ Việt Nam</h1>
+                                        <button>Xem thêm</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className={cx('item-popular')}>
-                                <div className={cx('info-popu')}>
-                                    <h1>Hạt cỡ lớn cho</h1>
-                                    <button>Xem thêm</button>
+                            </SwiperSlide>
+                            <SwiperSlide>
+                                <div className={cx('item-popular')}>
+                                    <div className={cx('info-popu')}>
+                                        <h1>Hạt cỡ lớn cho</h1>
+                                        <button>Xem thêm</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </SwiperSlide>
-                    </Swiper>
+                            </SwiperSlide>
+                        </Swiper>
+                    </div>
                 </div>
             </div>
             <div className={cx('chart-statistical')}>

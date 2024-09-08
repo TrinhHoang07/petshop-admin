@@ -1,13 +1,12 @@
 import classNames from 'classnames/bind';
 import styles from './Chat.module.scss';
-
-import { useRef, useState, useEffect, useMemo } from 'react';
-import { Socket, io } from 'socket.io-client';
+import { useState, useEffect, useMemo } from 'react';
 import { ChatBoxTest } from '../../components/Layout/components/ChatBoxTest';
 import ChatItem from './ChatItem';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { Helper } from '../../helper';
-// import { ChatBoxTest } from '../../components/Layout/components/ChatBoxTest';
+import { socketContext } from '../../contexts/socketContext';
+import { useAppContext } from '../../providers/AppProvider';
 
 const cx = classNames.bind(styles);
 
@@ -21,17 +20,14 @@ export type TMes = {
 ///////// CHƯA FORCUS VÀO INPUT KHI CHUYỂN SANG USER KHÁC => CHƯA FIX
 
 function Chat(): JSX.Element {
-    // test chats
-    const socketRef = useRef<Socket>();
     const [messages, setMessages] = useState<TMes[]>([]);
     const [open, setOpen] = useState<boolean>(false);
     const [seen, setSeen] = useState<string[]>([]);
     const [idUser, setIdUser] = useState<string>('');
     const [isUser, setIsUser] = useState<boolean>(true);
+    const { isConnected } = useAppContext();
 
     const renderUser = useMemo(() => {
-        console.log('messages: ', messages);
-
         if (messages.length > 0 && messages[messages.length - 1].role === 'admin') {
             setIsUser(false);
         } else {
@@ -57,18 +53,6 @@ function Chat(): JSX.Element {
     }, []);
 
     useEffect(() => {
-        const socket = io('http://localhost:3008', {
-            timeout: 5000,
-        });
-
-        socketRef.current = socket;
-
-        return () => {
-            socketRef.current?.disconnect();
-        };
-    }, []);
-
-    useEffect(() => {
         if (isUser && !open) {
             const idNew = renderUser[0]?.id;
 
@@ -87,36 +71,30 @@ function Chat(): JSX.Element {
     }, [renderUser]);
 
     useEffect(() => {
-        if (socketRef.current) {
-            socketRef.current.on('connect', () => {
-                console.log('id connected ADMIN: ', socketRef.current?.id);
-
-                socketRef.current?.on('user_sent', (data) => {
-                    setMessages((prev) => [
-                        ...prev,
-                        {
-                            message: data.message,
-                            name: data.name,
-                            role: data.role,
-                            id: data.id,
-                        },
-                    ]);
-                    Helper.handleCreateOrSaveMessage({
-                        message: data.message,
-                        name: data.name,
-                        role: data.role,
-                        id: data.id,
-                    });
-                });
+        socketContext.on('user_sent', (data) => {
+            setMessages((prev) => [
+                ...prev,
+                {
+                    message: data.message,
+                    name: data.name,
+                    role: data.role,
+                    id: data.id,
+                },
+            ]);
+            Helper.handleCreateOrSaveMessage({
+                message: data.message,
+                name: data.name,
+                role: data.role,
+                id: data.id,
             });
+        });
 
-            socketRef.current.on('disconnect', () => {
-                console.log('id disconnected: ', socketRef.current?.id);
-            });
-        }
+        return () => {
+            socketContext.off('user_sent');
+        };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [socketRef.current]);
+    }, [isConnected]);
 
     return (
         <div className={cx('wrapper')}>
@@ -152,7 +130,6 @@ function Chat(): JSX.Element {
                     setOpen={setOpen}
                     messages={messages}
                     setMessages={setMessages}
-                    socketRef={socketRef}
                 />
             </div>
         </div>

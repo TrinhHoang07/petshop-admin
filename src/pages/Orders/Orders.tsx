@@ -7,6 +7,8 @@ import { Button, Modal, Select, Table } from 'antd';
 import { Loading } from '../../components/Loading';
 import { useAntContext } from '../../contexts/AntContexts';
 import { Helper } from '../../helper';
+import { useAppContext } from '../../providers/AppProvider';
+import { socketContext } from '../../contexts/socketContext';
 
 const cx = classNames.bind(styles);
 
@@ -15,7 +17,6 @@ interface _IDataOrders extends IOrders {
 }
 
 function Orders() {
-    // const [dataSource, setDataSource] = useState<Orders[]>([]);
     const [data, setData] = useState<IOrders[]>([]);
     const [dataSource, setDataSource] = useState<_IDataOrders[]>([]);
     const [status, setStatus] = useState<{
@@ -26,6 +27,24 @@ function Orders() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const message = useAntContext();
     const apiService = new ApiService();
+    const { isConnected } = useAppContext();
+
+    useEffect(() => {
+        socketContext.on('user_sent', (data) => {
+            Helper.handleCreateOrSaveMessage({
+                message: data.message,
+                name: data.name,
+                role: data.role,
+                id: data.id,
+            });
+        });
+
+        return () => {
+            socketContext.off('user_sent');
+        };
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isConnected]);
 
     useEffect(() => {
         apiService.orders
@@ -41,8 +60,6 @@ function Orders() {
     }, []);
 
     useEffect(() => {
-        console.log('data: ', data);
-
         if (data.length > 0) {
             setIsLoading(false);
 

@@ -21,10 +21,8 @@
         }
 
         .slider-popular-week {
-            max-width: calc(100vw - 450px);
+            max-width: 100%;
             overflow: hidden;
-            display: flex;
-            margin: auto;
 
             .item-popular {
                 user-select: none;

@@ -68,4 +68,20 @@ export class ApiService {
             route,
         };
     }
+
+    get blogs() {
+        const route = {
+            getBlogs: '/blogs/all',
+            createBlog: '/admin/blogs/create',
+            updateBlog: (id: string) => `/admin/blogs/update/${id}`,
+            deleteBlog: (id: string) => `/admin/blogs/delete/${id}`,
+        };
+
+        return {
+            getBlogs: () => AxiosClientApi.get(route.getBlogs),
+            createBlog: (data: any) => AxiosClientApi.post(route.createBlog, data),
+            updateBlog: (id: string, data: any) => AxiosClientApi.put(route.updateBlog(id), data),
+            deleteBlog: (id: string) => AxiosClientApi.delete(route.deleteBlog(id)),
+        };
+    }
 }

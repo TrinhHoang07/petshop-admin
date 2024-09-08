@@ -1,5 +1,5 @@
 import { AiOutlineHome, AiOutlineShoppingCart, AiOutlineSetting } from 'react-icons/ai';
-import { BsChatText, BsBoxArrowUpRight, BsClipboardData } from 'react-icons/bs';
+import { BsChatText, BsClipboardData } from 'react-icons/bs';
 import { MdOutlinePets } from 'react-icons/md';
 import { CiUser } from 'react-icons/ci';
 import classNames from 'classnames/bind';
@@ -7,6 +7,7 @@ import styles from './SideBar.module.scss';
 import logo from '../../../../assets/images/logo-petshop.jpg';
 import { NavLink } from 'react-router-dom';
 import routesConfig from '../../../../config/routes';
+import { FaRegNewspaper } from 'react-icons/fa';
 
 const cx = classNames.bind(styles);
 
@@ -56,16 +57,16 @@ function SideBar({ isOpen }: { isOpen: boolean }) {
                         <span>Đơn hàng</span>
                     </div>
                 </NavLink>
-                <NavLink to={''} className={cx('link-wrapper')}>
+                <NavLink to={routesConfig.blogs} className={cx('link-wrapper')}>
                     <div className={cx('container-link')}>
-                        <BsClipboardData size={'2.5rem'} />
-                        <span>Thống kê</span>
+                        <FaRegNewspaper size={'2.5rem'} />
+                        <span>Bài viết</span>
                     </div>
                 </NavLink>
                 <NavLink to={''} className={cx('link-wrapper')}>
                     <div className={cx('container-link')}>
-                        <BsBoxArrowUpRight size={'2.5rem'} />
-                        <span>Phân tích</span>
+                        <BsClipboardData size={'2.5rem'} />
+                        <span>Thống kê</span>
                     </div>
                 </NavLink>
                 <NavLink to={''} className={cx('link-wrapper')}>

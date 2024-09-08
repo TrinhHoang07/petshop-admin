@@ -1,6 +1,7 @@
 import { DefaultLayout } from '../components/Layout/DefaultLayout';
 import { NoLayout } from '../components/Layout/NoLayout';
 import routesConfig from '../config/routes';
+import Blogs from '../pages/Blog';
 import { Chat } from '../pages/Chat';
 import { Customers } from '../pages/Customers';
 import { Home } from '../pages/Home';
@@ -58,6 +59,13 @@ const routes: TRoutes[] = [
         component: Orders,
         layout: DefaultLayout,
         path: routesConfig.orders,
+        protect: true,
+    },
+    {
+        id: 7,
+        component: Blogs,
+        layout: DefaultLayout,
+        path: routesConfig.blogs,
         protect: true,
     },
     {

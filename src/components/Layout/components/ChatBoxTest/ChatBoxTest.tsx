@@ -8,6 +8,7 @@ import cat from '../../../../assets/images/meoww.jpg';
 import { useEffect, useRef, useState, SetStateAction, Dispatch, useMemo } from 'react';
 import { Typing } from '../Typing';
 import { Helper } from '../../../../helper';
+import { socketContext } from '../../../../contexts/socketContext';
 
 const cx = classNames.bind(styles);
 type TMes = {
@@ -20,7 +21,6 @@ type TMes = {
 type _T_Props = {
     idUser: string;
     setIdUser: (value: string) => void;
-    socketRef: any;
     messages: TMes[];
     setMessages: Dispatch<SetStateAction<TMes[]>>;
     open: boolean;
@@ -44,12 +44,10 @@ function ChatBox(props: _T_Props) {
     }, [props.open, props.messages]);
 
     useEffect(() => {
-        if (props.socketRef.current) {
-            if (value.trim().length > 0) {
-                props.socketRef.current?.emit('typing_admin', nameCurrent.current);
-            } else {
-                props.socketRef.current?.emit('clear_typing_admin', nameCurrent.current);
-            }
+        if (value.trim().length > 0) {
+            socketContext.emit('typing_admin', nameCurrent.current);
+        } else {
+            socketContext.emit('clear_typing_admin', nameCurrent.current);
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,24 +62,27 @@ function ChatBox(props: _T_Props) {
     }, [props.idUser, props.messages]);
 
     useEffect(() => {
-        if (props.socketRef.current) {
-            props.socketRef.current.on(`typing_user_${nameCurrent.current}`, (data: any) => {
-                if (nameCurrent.current === data.isType) {
-                    setIsVisible(true);
-                } else {
-                    setIsVisible(false);
-                }
-            });
+        socketContext.on(`typing_user_${nameCurrent.current}`, (data: any) => {
+            if (nameCurrent.current === data.isType) {
+                setIsVisible(true);
+            } else {
+                setIsVisible(false);
+            }
+        });
 
-            props.socketRef.current.on(`clear_typing_user_${nameCurrent.current}`, (data: any) => {
-                if (data.isType === nameCurrent.current) {
-                    setIsVisible(false);
-                }
-            });
-        }
+        socketContext.on(`clear_typing_user_${nameCurrent.current}`, (data: any) => {
+            if (data.isType === nameCurrent.current) {
+                setIsVisible(false);
+            }
+        });
+
+        return () => {
+            socketContext.off(`typing_user_${nameCurrent.current}`);
+            socketContext.off(`clear_typing_user_${nameCurrent.current}`);
+        };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.socketRef.current, nameCurrent.current]);
+    }, [nameCurrent.current]);
 
     const scrollToBottom = () => {
         messagesEndRef1.current?.scrollIntoView({ behavior: 'smooth' });
@@ -89,7 +90,7 @@ function ChatBox(props: _T_Props) {
 
     const handleSubmit = () => {
         if (value.trim().length > 0) {
-            props.socketRef.current?.emit('messageToUser', {
+            socketContext.emit('messageToUser', {
                 id: props.idUser,
                 name: 'Van Hoang',
                 message: value,

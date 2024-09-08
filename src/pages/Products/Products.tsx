@@ -12,6 +12,9 @@ import ModalUpdateProducts from './ModalUpdateProduct';
 import { Loading } from '../../components/Loading';
 import { Products as I_Products } from '../../models/Products';
 import { ApiService } from '../../axios/ApiService';
+import { useAppContext } from '../../providers/AppProvider';
+import { socketContext } from '../../contexts/socketContext';
+import { Helper } from '../../helper';
 
 const cx = classNames.bind(styles);
 
@@ -27,13 +30,8 @@ export type _T_FormProducts = {
     color?: string;
 };
 
-// type sourceData = Omit<_T_FormProducts, 'sub_description' | 'preview_url'> & {
-//     key: number;
-// };
-
 function Products() {
     const apiService = new ApiService();
-
     const [activeHeader, setActiveHeader] = useState<string>('all');
     const [description, setDescription] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -45,6 +43,24 @@ function Products() {
     const message = useAntContext();
     const [formAdd] = Form.useForm<_T_FormProducts>();
     const [formUpdate] = Form.useForm<_T_FormProducts>();
+    const { isConnected } = useAppContext();
+
+    useEffect(() => {
+        socketContext.on('user_sent', (data) => {
+            Helper.handleCreateOrSaveMessage({
+                message: data.message,
+                name: data.name,
+                role: data.role,
+                id: data.id,
+            });
+        });
+
+        return () => {
+            socketContext.off('user_sent');
+        };
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isConnected]);
 
     const handleFilterData = (data: I_Products[], type?: string): _T_FormProducts[] => {
         if (type) {

@@ -2,8 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Chat.module.scss';
 import img from '../../assets/images/unknown-user.jpg';
 import { TMes } from './Chat';
-import { useEffect, useRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -13,50 +12,7 @@ type T_Props = {
 };
 
 function ChatItem(props: T_Props) {
-    const socketRef = useRef<Socket>();
     const [idChats, setIdChats] = useState<any>({});
-
-    useEffect(() => {
-        const socket = io('http://localhost:3008', {
-            timeout: 5000,
-        });
-
-        socketRef.current = socket;
-
-        return () => {
-            socketRef.current?.disconnect();
-        };
-    }, []);
-
-    useEffect(() => {
-        if (socketRef.current) {
-            socketRef.current.on('connect', () => {
-                socketRef.current?.on(`${props.item.id}`, (data) => {
-                    setIdChats((prev: any) => {
-                        return {
-                            ...prev,
-                            [`${props.item.id}`]: data,
-                        };
-                    });
-                });
-
-                socketRef.current?.on('user_sent', (data) => {
-                    setIdChats((prev: any) => {
-                        return {
-                            ...prev,
-                            [`${data.id}`]: data,
-                        };
-                    });
-                });
-            });
-
-            socketRef.current.on('disconnect', () => {
-                console.log('id disconnected: ', socketRef.current?.id);
-            });
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [socketRef.current]);
 
     return (
         <div className={cx('chat-item')}>
