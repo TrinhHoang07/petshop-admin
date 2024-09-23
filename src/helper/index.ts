@@ -10,6 +10,14 @@ export class Helper {
         return JSON.parse(atob(str));
     }
 
+    static getNameFromStatus(status: string) {
+        if (status === 'processing') return 'Đang xử lý';
+        else if (status === 'shipping') return 'Đang giao';
+        else if (status === 'finished') return 'Đã giao';
+        else if (status === 'cancel') return 'Đã hủy';
+        else return 'Xảy ra lỗi';
+    }
+
     static handleCreateOrSaveMessage(message: TMes) {
         const data = sessionStorage.getItem('messages-admin');
 

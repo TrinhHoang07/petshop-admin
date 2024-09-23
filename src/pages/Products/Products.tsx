@@ -15,6 +15,7 @@ import { ApiService } from '../../axios/ApiService';
 import { useAppContext } from '../../providers/AppProvider';
 import { socketContext } from '../../contexts/socketContext';
 import { Helper } from '../../helper';
+import { AiOutlineSearch } from 'react-icons/ai';
 
 const cx = classNames.bind(styles);
 
@@ -34,6 +35,7 @@ function Products() {
     const apiService = new ApiService();
     const [activeHeader, setActiveHeader] = useState<string>('all');
     const [description, setDescription] = useState<string>('');
+    const [search, setSearch] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isModalAdd, setIsModalAdd] = useState<boolean>(false);
     const [isModalUpdate, setIsModalUpdate] = useState<boolean>(false);
@@ -108,6 +110,20 @@ function Products() {
     useEffect(() => {
         setDataSource(handleFilterData(data));
     }, [data]);
+
+    useEffect(() => {
+        if (search.trim().length > 0) {
+            setDataSource(
+                handleFilterData(
+                    data.filter((item) => item.name.includes(search.trim())),
+                    activeHeader !== 'all' ? activeHeader : '',
+                ),
+            );
+        } else {
+            setDataSource(handleFilterData(data, activeHeader !== 'all' ? activeHeader : ''));
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search]);
 
     useEffect(() => {
         dataSource.length > 0 && setIsLoading(false);
@@ -254,66 +270,77 @@ function Products() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
-                <div className={cx('list-options')}>
-                    <div
-                        onClick={() => setActiveHeader('all')}
-                        style={{
-                            color: activeHeader === 'all' ? '#fff' : '',
-                        }}
-                        className={cx('item-option')}
-                    >
-                        <span>
-                            <MdPets size={'2rem'} />
-                        </span>
-                        <p>Tất cả</p>
+                <div>
+                    <div className={cx('list-options')}>
+                        <div
+                            onClick={() => setActiveHeader('all')}
+                            style={{
+                                color: activeHeader === 'all' ? '#fff' : '',
+                            }}
+                            className={cx('item-option')}
+                        >
+                            <span>
+                                <MdPets size={'2rem'} />
+                            </span>
+                            <p>Tất cả</p>
+                        </div>
+                        <div
+                            onClick={() => setActiveHeader('dog')}
+                            style={{
+                                color: activeHeader === 'dog' ? '#fff' : '',
+                            }}
+                            className={cx('item-option')}
+                        >
+                            <span>
+                                <FaDog size={'2rem'} />
+                            </span>
+                            <p>Chó cưng</p>
+                        </div>
+                        <div
+                            onClick={() => setActiveHeader('cat')}
+                            style={{
+                                color: activeHeader === 'cat' ? '#fff' : '',
+                            }}
+                            className={cx('item-option')}
+                        >
+                            <span>
+                                <FaCat size={'2rem'} />
+                            </span>
+                            <p>Mèo cưng</p>
+                        </div>
+                        <div
+                            onClick={() => setActiveHeader('food')}
+                            style={{
+                                color: activeHeader === 'food' ? '#fff' : '',
+                            }}
+                            className={cx('item-option')}
+                        >
+                            <span>
+                                <GiOpenedFoodCan size={'2rem'} />
+                            </span>
+                            <p>Đồ ăn</p>
+                        </div>
+                        <div
+                            onClick={() => setActiveHeader('accessory')}
+                            style={{
+                                color: activeHeader === 'accessory' ? '#fff' : '',
+                            }}
+                            className={cx('item-option')}
+                        >
+                            <span>
+                                <GiOpenedFoodCan size={'2rem'} />
+                            </span>
+                            <p>Phụ kiện</p>
+                        </div>
                     </div>
-                    <div
-                        onClick={() => setActiveHeader('dog')}
-                        style={{
-                            color: activeHeader === 'dog' ? '#fff' : '',
-                        }}
-                        className={cx('item-option')}
-                    >
-                        <span>
-                            <FaDog size={'2rem'} />
-                        </span>
-                        <p>Chó cưng</p>
-                    </div>
-                    <div
-                        onClick={() => setActiveHeader('cat')}
-                        style={{
-                            color: activeHeader === 'cat' ? '#fff' : '',
-                        }}
-                        className={cx('item-option')}
-                    >
-                        <span>
-                            <FaCat size={'2rem'} />
-                        </span>
-                        <p>Mèo cưng</p>
-                    </div>
-                    <div
-                        onClick={() => setActiveHeader('food')}
-                        style={{
-                            color: activeHeader === 'food' ? '#fff' : '',
-                        }}
-                        className={cx('item-option')}
-                    >
-                        <span>
-                            <GiOpenedFoodCan size={'2rem'} />
-                        </span>
-                        <p>Đồ ăn</p>
-                    </div>
-                    <div
-                        onClick={() => setActiveHeader('accessory')}
-                        style={{
-                            color: activeHeader === 'accessory' ? '#fff' : '',
-                        }}
-                        className={cx('item-option')}
-                    >
-                        <span>
-                            <GiOpenedFoodCan size={'2rem'} />
-                        </span>
-                        <p>Phụ kiện</p>
+                    <div className={cx('searching')}>
+                        <AiOutlineSearch size={'2.2rem'} />
+                        <input
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            type="text"
+                            placeholder="Tìm kiếm..."
+                        />
                     </div>
                 </div>
                 <div className={cx('actions')}>

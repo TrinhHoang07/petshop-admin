@@ -68,3 +68,24 @@
     height: calc(50vh);
     overflow-y: auto;
 }
+
+.searching {
+    display: flex;
+    align-items: center;
+    margin-top: 16px;
+    background-color: #353640;
+    border-radius: 999px;
+    padding: 0 8px;
+
+    input {
+        margin-left: 8px;
+        outline: none;
+        min-width: 250px;
+        border: none;
+        background-color: transparent;
+        padding: 12px 0;
+        caret-color: var(--sidebar-color);
+        color: var(--sidebar-color);
+        font-size: 1.4rem;
+    }
+}

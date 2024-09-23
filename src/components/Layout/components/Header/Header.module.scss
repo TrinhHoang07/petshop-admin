@@ -52,3 +52,23 @@
         }
     }
 }
+
+.content-notificationszz {
+    :last-child {
+        border-bottom: none;
+    }
+}
+.content-notificationsz {
+    border-bottom: 1px solid #d7d7d7;
+    padding: 0 12px;
+    &:hover {
+        background-color: #f2f3f5;
+        cursor: pointer;
+    }
+    p {
+        padding: 12px;
+    }
+    :last-child {
+        border-bottom: none;
+    }
+}

@@ -8,7 +8,6 @@ type TAdmin = {
     name?: string;
     email?: string;
     phone?: string;
-    token?: string;
 };
 
 type TState = {

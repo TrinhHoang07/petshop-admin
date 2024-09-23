@@ -1,6 +1,7 @@
 import { IoMdNotificationsOutline } from 'react-icons/io';
+import { GoDotFill } from 'react-icons/go';
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from 'react-icons/ai';
-import avatar from '../../../../assets/images/logo-petshop.jpg';
+import avatar from '../../../../assets/images/logo.png';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { Dropdown, MenuProps, Modal } from 'antd';
@@ -8,7 +9,8 @@ import { useAntContext } from '../../../../contexts/AntContexts';
 import { useSessionContext } from '../../../../contexts/SessionContext';
 import { useNavigate } from 'react-router-dom';
 import routesConfig from '../../../../config/routes';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ApiService } from '../../../../axios/ApiService';
 
 const cx = classNames.bind(styles);
 
@@ -17,6 +19,19 @@ function Header({ setIsOpen, isOpen }: { setIsOpen: Function; isOpen: boolean })
     const [, setStateContext] = useSessionContext();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+    const apiService = new ApiService();
+    const [notifications, setNotifications] = useState<any[]>([]);
+
+    useEffect(() => {
+        apiService.notis
+            .getNotis()
+            .then((res) => {
+                if (res.message === 'success') {
+                    setNotifications(res.data);
+                }
+            })
+            .catch((err) => console.error(err));
+    }, []);
 
     const onClick: MenuProps['onClick'] = ({ key }) => {
         if (key === 'logout') {
@@ -47,6 +62,30 @@ function Header({ setIsOpen, isOpen }: { setIsOpen: Function; isOpen: boolean })
         },
     ];
 
+    const handleSeen = (id: number) => {
+        apiService.notis
+            .updateSeen(id.toString())
+            .then((res: any) => {
+                if (res.message === 'success') {
+                    setNotifications((item) => {
+                        const data = [...item];
+                        const itemId = data.findIndex((item) => item.id === id);
+                        if (itemId !== -1) {
+                            data[itemId] = {
+                                ...data[itemId],
+                                seen: true,
+                            };
+
+                            return data;
+                        } else {
+                            return data;
+                        }
+                    });
+                }
+            })
+            .catch((err) => console.error(err));
+    };
+
     return (
         <div className={cx('wrapper')}>
             <Modal
@@ -57,10 +96,32 @@ function Header({ setIsOpen, isOpen }: { setIsOpen: Function; isOpen: boolean })
                 footer={<></>}
                 forceRender
             >
-                <div>
-                    <p>
-                        <strong>Bạn chưa có thông báo nào!</strong>
-                    </p>
+                <div className={cx('content-notificationszz')}>
+                    {notifications.length > 0 ? (
+                        notifications.map((item) => (
+                            <div
+                                key={item.id}
+                                onClick={() => handleSeen(item.id)}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                }}
+                                className={cx('content-notificationsz')}
+                            >
+                                <p>{item.seen ? item.content : <strong>{item.content}</strong>}</p>
+                                {!item.seen && (
+                                    <GoDotFill
+                                        style={{
+                                            color: 'blue',
+                                        }}
+                                    />
+                                )}
+                            </div>
+                        ))
+                    ) : (
+                        <p>Chưa có thông báo nào!</p>
+                    )}
                 </div>
             </Modal>
             <div onClick={() => setIsOpen((prev: boolean) => !prev)} className={cx('close-sidebar')}>
@@ -70,7 +131,11 @@ function Header({ setIsOpen, isOpen }: { setIsOpen: Function; isOpen: boolean })
                 <div onClick={() => setOpen(true)} className={cx('item')}>
                     <IoMdNotificationsOutline size={'2.5rem'} />
                     <div className={cx('count-noti')}>
-                        <span>5</span>
+                        <span>
+                            {notifications.filter((item) => !item.seen).length > 0
+                                ? notifications.filter((item) => !item.seen).length
+                                : ''}
+                        </span>
                     </div>
                 </div>
                 <Dropdown trigger={['click']} menu={{ items, onClick }}>

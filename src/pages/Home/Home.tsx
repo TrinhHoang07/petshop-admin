@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import { CardHome } from '../../components/CardHome';
@@ -11,13 +11,20 @@ import './custom.scss';
 import { socketContext } from '../../contexts/socketContext';
 import { Helper } from '../../helper';
 import { useAppContext } from '../../providers/AppProvider';
+import { ApiService } from '../../axios/ApiService';
 
 const cx = classNames.bind(styles);
 
 function Home(): JSX.Element {
     const chartRef = useRef<HTMLCanvasElement>(null);
     const chart = useRef<any>();
+    const [data, setData] = useState<any>({});
     const { isConnected } = useAppContext();
+    const apiService = new ApiService();
+
+    const monthCurrent = useMemo(() => {
+        return new Date().getMonth() + 1;
+    }, []);
 
     useEffect(() => {
         socketContext.on('user_sent', (data) => {
@@ -35,6 +42,22 @@ function Home(): JSX.Element {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isConnected]);
+
+    useEffect(() => {
+        apiService.orders
+            .getDataHome(2024)
+            .then((res) => {
+                if (res.message === 'success') {
+                    console.log(res.data);
+                    setData(res.data);
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (chartRef.current) {
@@ -94,7 +117,7 @@ function Home(): JSX.Element {
                     datasets: [
                         {
                             label: 'Số lượng đơn hàng (đã bán)',
-                            data: [0, 20, 20, 60, 60, 120, 100, 180, 120, 125, 105, 110, 170],
+                            data: data?.dataSetChart?.slice(0, monthCurrent)?.map((item: any) => item.data.length),
                             borderColor: 'red',
                             fill: false,
                             cubicInterpolationMode: 'monotone',
@@ -102,7 +125,9 @@ function Home(): JSX.Element {
                         },
                         {
                             label: 'Số lượng người dùng',
-                            data: [0, 10, 35, 55, 68, 83, 95, 110, 119, 125, 155, 200, 210],
+                            data: data?.dataCustomers?.dataSetChart
+                                ?.slice(0, monthCurrent)
+                                ?.map((item: any) => item.data.length),
                             borderColor: 'blue',
                             fill: false,
                             cubicInterpolationMode: 'monotone',
@@ -110,7 +135,9 @@ function Home(): JSX.Element {
                         },
                         {
                             label: 'Số sản phẩm đang có',
-                            data: [0, 5, 10, 18, 20, 29, 50, 62, 88, 111, 121, 150, 180],
+                            data: data?.dataProducts?.dataSetChart
+                                ?.slice(0, monthCurrent)
+                                ?.map((item: any) => item.data.length),
                             borderColor: 'yellow',
                             fill: false,
                             cubicInterpolationMode: 'monotone',
@@ -124,27 +151,39 @@ function Home(): JSX.Element {
         return () => {
             chart.current.destroy();
         };
-    }, []);
+    }, [data]);
 
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header-home')}>
-                <CardHome title="Đơn hàng hôm nay" subTitle="Tiến triển tốt" value={99} type="orders" redirect="/" />
+                <CardHome
+                    title="Đơn hàng hôm nay"
+                    subTitle="Tiến triển tốt"
+                    value={data?.totalOrdersaToday?.length ?? 0}
+                    type="orders"
+                    redirect="/"
+                />
                 <CardHome
                     title="Tổng số người dùng"
                     subTitle="Đang tăng vọt"
-                    value={5799}
+                    value={data?.totalCustomers ?? 0}
                     type="users"
                     redirect="/customers"
                 />
                 <CardHome
                     title="Tổng số sản phẩm"
                     subTitle="Nhiều hàng mới về"
-                    value={388}
+                    value={data?.totalproducts ?? 0}
                     type="products"
                     redirect="/products"
                 />
-                <CardHome title="Tổng số đơn hàng" subTitle="Tăng vọt" value={2179} type="ordered" redirect="/" />
+                <CardHome
+                    title="Tổng số đơn hàng"
+                    subTitle="Tăng vọt"
+                    value={data?.totalOrders ?? 0}
+                    type="ordered"
+                    redirect="/"
+                />
             </div>
             <div className={cx('popular-container')}>
                 <h3>sản phẩm bán chạy nhất tuần</h3>
@@ -161,46 +200,53 @@ function Home(): JSX.Element {
                             spaceBetween={16}
                             navigation
                         >
-                            <SwiperSlide>
-                                <div className={cx('item-popular')}>
-                                    <div className={cx('info-popu')}>
-                                        <h1>Mèo Anh Lông Ngắn</h1>
-                                        <button>Xem thêm</button>
-                                    </div>
-                                </div>
-                            </SwiperSlide>
-                            <SwiperSlide>
-                                <div className={cx('item-popular')}>
-                                    <div className={cx('info-popu')}>
-                                        <h1>Chó Alaska</h1>
-                                        <button>Xem thêm</button>
-                                    </div>
-                                </div>
-                            </SwiperSlide>
-                            <SwiperSlide>
-                                <div className={cx('item-popular')}>
-                                    <div className={cx('info-popu')}>
-                                        <h1>Mèo Anh Lông Dài</h1>
-                                        <button>Xem thêm</button>
-                                    </div>
-                                </div>
-                            </SwiperSlide>
-                            <SwiperSlide>
-                                <div className={cx('item-popular')}>
-                                    <div className={cx('info-popu')}>
-                                        <h1>Chó Cỏ Việt Nam</h1>
-                                        <button>Xem thêm</button>
-                                    </div>
-                                </div>
-                            </SwiperSlide>
-                            <SwiperSlide>
-                                <div className={cx('item-popular')}>
-                                    <div className={cx('info-popu')}>
-                                        <h1>Hạt cỡ lớn cho</h1>
-                                        <button>Xem thêm</button>
-                                    </div>
-                                </div>
-                            </SwiperSlide>
+                            {data?.dataSetWeek?.map((item: any) => {
+                                return (
+                                    <SwiperSlide>
+                                        <div
+                                            style={{
+                                                backgroundImage: `url(${item.product_preview_url})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center',
+                                            }}
+                                            className={cx('item-popular')}
+                                        ></div>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                padding: '8px 24px',
+                                            }}
+                                            className={cx('info-popu')}
+                                        >
+                                            <h1
+                                                style={{
+                                                    fontSize: '20px',
+                                                    color: '#fff',
+                                                    textAlign: 'center',
+                                                }}
+                                            >
+                                                {item.product_name}
+                                            </h1>
+                                            <button
+                                                style={{
+                                                    border: 'none',
+                                                    backgroundColor: 'orange',
+                                                    color: '#fff',
+                                                    cursor: 'pointer',
+                                                    borderRadius: '4px',
+                                                    padding: '10px 14px',
+                                                    marginTop: '10px',
+                                                }}
+                                            >
+                                                Xem thêm
+                                            </button>
+                                        </div>
+                                    </SwiperSlide>
+                                );
+                            })}
                         </Swiper>
                     </div>
                 </div>

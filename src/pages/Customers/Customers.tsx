@@ -11,6 +11,7 @@ import ModalAddCustomer from './ModalAddCustomer';
 import { useAppContext } from '../../providers/AppProvider';
 import { socketContext } from '../../contexts/socketContext';
 import { Helper } from '../../helper';
+import { AiOutlineSearch } from 'react-icons/ai';
 
 export type TFormAdd = {
     name: string;
@@ -27,8 +28,10 @@ const cx = classNames.bind(styles);
 
 function CustomersScreen() {
     const message = useAntContext();
-    const [dataSource, setDataSource] = useState<Customers[]>([]);
+    const [data, setData] = useState<any[]>([]);
+    const [dataSource, setDataSource] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [search, setSearch] = useState<string>('');
     const [isModalAdd, setIsModalAdd] = useState<boolean>(false);
     const [form] = Form.useForm<TFormAdd>();
     const apiService = new ApiService();
@@ -56,8 +59,37 @@ function CustomersScreen() {
             .getCustomers()
             .then((res) => {
                 if (res.data) {
-                    setDataSource(
-                        res.data.map((item: any) => ({
+                    setData(res.data);
+                }
+            })
+            .catch((err) => console.log(err));
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        setDataSource(
+            data.map((item: any) => ({
+                key: item.id,
+                id: item.id,
+                name: item.name,
+                gender: item.gender,
+                email: item.email,
+                address: item.address,
+                phoneNumber: item.phone_number,
+                birthDate: item.birth_date,
+                avatarPath: item.avatar_path,
+            })),
+        );
+    }, [data]);
+
+    useEffect(() => {
+        if (search.trim().length > 0) {
+            setDataSource(
+                data
+                    .filter((item) => item.name.includes(search.trim()))
+                    .map((item: any) => {
+                        return {
                             key: item.id,
                             id: item.id,
                             name: item.name,
@@ -67,14 +99,26 @@ function CustomersScreen() {
                             phoneNumber: item.phone_number,
                             birthDate: item.birth_date,
                             avatarPath: item.avatar_path,
-                        })),
-                    );
-                }
-            })
-            .catch((err) => console.log(err));
-
+                        };
+                    }),
+            );
+        } else {
+            setDataSource(
+                data.map((item: any) => ({
+                    key: item.id,
+                    id: item.id,
+                    name: item.name,
+                    gender: item.gender,
+                    email: item.email,
+                    address: item.address,
+                    phoneNumber: item.phone_number,
+                    birthDate: item.birth_date,
+                    avatarPath: item.avatar_path,
+                })),
+            );
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [search]);
 
     useEffect(() => {
         dataSource.length > 0 && setIsLoading(false);
@@ -157,10 +201,15 @@ function CustomersScreen() {
             <div className={cx('header')}>
                 <div className={cx('list-options')}>
                     <div className={cx('item-option')}>
-                        <span>
-                            <FaCat size={'2rem'} />
-                        </span>
-                        <p>Tìm kiếm</p>
+                        <div className={cx('searching')}>
+                            <AiOutlineSearch size={'2.2rem'} />
+                            <input
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                type="text"
+                                placeholder="Tìm kiếm..."
+                            />
+                        </div>
                     </div>
                 </div>
                 <div className={cx('actions')}>

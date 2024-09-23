@@ -4,7 +4,7 @@ import { MdOutlinePets } from 'react-icons/md';
 import { CiUser } from 'react-icons/ci';
 import classNames from 'classnames/bind';
 import styles from './SideBar.module.scss';
-import logo from '../../../../assets/images/logo-petshop.jpg';
+import logo from '../../../../assets/images/logo.png';
 import { NavLink } from 'react-router-dom';
 import routesConfig from '../../../../config/routes';
 import { FaRegNewspaper } from 'react-icons/fa';
@@ -24,7 +24,7 @@ function SideBar({ isOpen }: { isOpen: boolean }) {
                 <div className={cx('logo')}>
                     <img src={logo} alt="logo petshop" />
                 </div>
-                <span>H07</span>
+                <span>HZ</span>
             </div>
             <div className={cx('contents')}>
                 <NavLink to={routesConfig.home} className={cx('link-wrapper')}>

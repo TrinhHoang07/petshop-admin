@@ -21,7 +21,6 @@ function PrivateRoute(props: T_Props) {
                     isAuth: true,
                     admin: {
                         name: data.name,
-                        token: data.password,
                     },
                 });
                 setIsAuth(true);

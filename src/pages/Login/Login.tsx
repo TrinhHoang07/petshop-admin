@@ -4,8 +4,9 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import logo from '../../assets/images/logo-petshop.jpg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import routesConfig from '../../config/routes';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSessionContext } from '../../contexts/SessionContext';
+import { ApiService } from '../../axios/ApiService';
 
 const cx = classNames.bind(styles);
 
@@ -21,7 +22,9 @@ type TStateRedirect = {
 function Login() {
     const nameRef = useRef<any>();
     const passwordRef = useRef<any>();
+    const [error, setError] = useState<boolean>(false);
     const navigate = useNavigate();
+    const apiService = new ApiService();
     const { state }: { state: TStateRedirect } = useLocation();
     const [, setStateContext] = useSessionContext();
 
@@ -33,39 +36,59 @@ function Login() {
 
     const onSubmit: SubmitHandler<TForm> = (data: TForm) => {
         const dataUser = {
-            name: data.name,
+            username: data.name,
             password: data.password,
         };
-        localStorage.setItem('admin', JSON.stringify(dataUser));
-        setStateContext({
-            isAuth: true,
-            admin: {
-                name: data.name,
-                token: data.password,
-            },
-        });
 
-        if (state) {
-            navigate(state.redirect);
-        } else {
-            navigate(routesConfig.home);
-        }
+        apiService.auth
+            .login(dataUser)
+            .then((res) => {
+                if (res.message === 'success') {
+                    console.log('res: ', res);
+                    localStorage.setItem('admin', JSON.stringify(dataUser));
+                    setStateContext({
+                        isAuth: true,
+                        admin: {
+                            name: data.name,
+                        },
+                    });
+
+                    if (state) {
+                        navigate(state.redirect);
+                    } else {
+                        navigate(routesConfig.home);
+                    }
+                }
+            })
+            .catch((err) => {
+                setError(true);
+                handleErrorInput(nameRef.current);
+                handleErrorInput(passwordRef.current);
+            });
     };
 
     const handleErrorInput = (ele: HTMLInputElement) => {
-        ele.style.border = '1px solid red';
+        if (ele) {
+            ele.style.border = '1px solid red';
+        }
     };
 
     const handleClearErrorInput = (ele: HTMLInputElement) => {
-        ele.style.border = '1px solid dodgerblue';
+        if (ele) {
+            ele.style.border = '1px solid dodgerblue';
+        }
     };
 
     const handleFocus = (ele: HTMLInputElement) => {
-        ele.style.border = '1px solid dodgerblue';
+        if (ele) {
+            ele.style.border = '1px solid dodgerblue';
+        }
     };
 
     const handleBlur = (ele: HTMLInputElement) => {
-        ele.style.border = '1px solid #d7d7d7';
+        if (ele) {
+            ele.style.border = '1px solid #d7d7d7';
+        }
     };
 
     useEffect(() => {
@@ -125,6 +148,7 @@ function Login() {
                                 onBlur={(e) => handleBlur(e.target)}
                             />
                             {errors.password && <p className={cx('error-field')}>This field is required!</p>}
+                            {error && <p className={cx('error-field')}>Tên tài khoản hoặc mật khẩu không chính xác!</p>}
                         </div>
                         <div className={cx('form-submit')}>
                             <button type="submit">ĐĂNG NHẬP</button>
