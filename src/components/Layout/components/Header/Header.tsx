@@ -1,7 +1,7 @@
 import { IoMdNotificationsOutline } from 'react-icons/io';
 import { GoDotFill } from 'react-icons/go';
 import { AiOutlineMenuFold, AiOutlineMenuUnfold } from 'react-icons/ai';
-import avatar from '../../../../assets/images/logo.png';
+import avatar from '../../../../assets/images/logo-petshop.jpg';
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import { Dropdown, MenuProps, Modal } from 'antd';

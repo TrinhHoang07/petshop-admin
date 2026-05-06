@@ -4,7 +4,7 @@ import { MdOutlinePets } from 'react-icons/md';
 import { CiUser } from 'react-icons/ci';
 import classNames from 'classnames/bind';
 import styles from './SideBar.module.scss';
-import logo from '../../../../assets/images/logo.png';
+import logo from '../../../../assets/images/logo-petshop.jpg';
 import { NavLink } from 'react-router-dom';
 import routesConfig from '../../../../config/routes';
 import { FaRegNewspaper } from 'react-icons/fa';
